@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "id": "io.github.lithe-idea.lua-support",
   "displayName": "Lua Support",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "pluginAPIVersion": 1,
   "vendor": {
     "id": "io.github.lithe-idea",
@@ -24,8 +24,8 @@
       "languageID": "lua",
       "languageIdentifier": "lua",
       "launch": {
-        "kind": "systemCommand",
-        "commands": ["lua-language-server"]
+        "kind": "packaged",
+        "path": "bin/lithe-lua-language-server"
       },
       "arguments": [],
       "validationArguments": []

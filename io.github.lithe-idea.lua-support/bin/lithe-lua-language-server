@@ -1,0 +1,12 @@
+#!/bin/sh
+# Lithe installs plugins read-only and rejects a plugin whose files change, so
+# LuaLS must not write logs or generated meta files next to itself (its
+# defaults). Keep that state in the user's cache directory instead.
+set -eu
+package_root=$(cd "$(dirname "$0")/.." && pwd)
+state_dir="${XDG_CACHE_HOME:-$HOME/Library/Caches}/io.github.lithe-idea.lua-support"
+mkdir -p "$state_dir/log" "$state_dir/meta"
+exec "$package_root/language-server/bin/lua-language-server" \
+  --logpath="$state_dir/log" \
+  --metapath="$state_dir/meta" \
+  "$@"
