@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "id": "io.github.lithe-idea.lua-support",
   "displayName": "Lua Support",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "pluginAPIVersion": 1,
   "vendor": {
     "id": "io.github.lithe-idea",
@@ -16,7 +16,7 @@
       "id": "lua",
       "displayName": "Lua",
       "fileExtensions": ["lua"],
-      "projectFileNames": [".luarc.json", ".luarc.jsonc"]
+      "projectFileNames": [".luacheckrc", ".luarc.json", ".luarc.jsonc"]
     }
   ],
   "languageServers": [
