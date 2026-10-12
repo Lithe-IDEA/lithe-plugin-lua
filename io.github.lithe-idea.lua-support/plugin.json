@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 2,
+  "id": "io.github.lithe-idea.lua-support",
+  "displayName": "Lua Support",
+  "version": "0.1.0",
+  "pluginAPIVersion": 1,
+  "vendor": {
+    "id": "io.github.lithe-idea",
+    "displayName": "Lithe Community",
+    "signatureRequirement": "none"
+  },
+  "permissions": ["languageServer.launch", "process.run"],
+  "activationEvents": ["onLanguage:lua", "onRun:lua"],
+  "languages": [
+    {
+      "id": "lua",
+      "displayName": "Lua",
+      "fileExtensions": ["lua"],
+      "projectFileNames": [".luarc.json", ".luarc.jsonc"]
+    }
+  ],
+  "languageServers": [
+    {
+      "languageID": "lua",
+      "languageIdentifier": "lua",
+      "launch": {
+        "kind": "systemCommand",
+        "commands": ["lua-language-server"]
+      },
+      "arguments": [],
+      "validationArguments": []
+    }
+  ],
+  "executionProviders": [
+    {
+      "languageID": "lua",
+      "run": {
+        "executable": { "command": "lua" },
+        "arguments": ["${file}", "${userArguments}"]
+      }
+    }
+  ]
+}
