@@ -27,8 +27,10 @@ LuaLS 在构建时按 `language-server.json` 固定的版本下载并核对 SHA-
    brew install lua
    ```
 
-2. 在 Lithe 中打开 **设置 → 插件 → ⚙ → 管理插件仓库…**，添加 `https://github.com/Lithe-IDEA/Lithe-store`。
-3. 在 **插件市场** 搜索 “Lua Support”，安装并确认。
+2. 在 Lithe（0.6.1 或更新版本）中打开 **设置 → 插件 → 插件市场**，搜索 “Lua Support”，安装并确认。
+
+Lithe 已预置 Lithe Store 社区插件源。如果你之前移除了它，先在 **⚙ → 管理插件仓库…** 中重新添加
+`https://github.com/Lithe-IDEA/Lithe-store`。
 
 目前发布 macOS Apple Silicon 与 Intel 两个包；Lithe for Windows 支持插件市场后会增加 Windows 包。
 
