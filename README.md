@@ -28,6 +28,7 @@ LuaLS 在构建时按 `language-server.json` 固定的版本下载并核对 SHA-
    ```
 
 2. 在 Lithe（0.6.1 或更新版本）中打开 **设置 → 插件 → 插件市场**，搜索 “Lua Support”，安装并确认。
+3. 按界面提示重启 Lithe，再打开项目中的 `.lua` 文件以激活语言服务器。
 
 Lithe 已预置 Lithe Store 社区插件源。如果你之前移除了它，先在 **⚙ → 管理插件仓库…** 中重新添加
 `https://github.com/Lithe-IDEA/Lithe-store`。
@@ -35,6 +36,11 @@ Lithe 已预置 Lithe Store 社区插件源。如果你之前移除了它，先�
 目前发布 macOS Apple Silicon 与 Intel 两个包；Lithe for Windows 支持插件市场后会增加 Windows 包。
 
 ## 用这个仓库做模板
+
+先读 Lithe Store 的[LSP 插件完整生命周期教程](https://github.com/Lithe-IDEA/Lithe-store/blob/main/docs/lsp-plugin-lifecycle.md)，
+跟着完成清单、服务器打包、激活、状态隔离、停止与升级验收。
+需要接入构建工具、运行或测试时，继续读[构建工具接入指南](https://github.com/Lithe-IDEA/Lithe-store/blob/main/docs/build-tool-integration.md)。
+教程会区分已可发布的 API 与开发中的构建系统接口。
 
 ```text
 io.github.lithe-idea.lua-support/plugin.json   # 插件描述，目录名必须等于插件 id
@@ -52,8 +58,20 @@ scripts/package.mjs                            # 下载并校验 LuaLS，按平�
 2. 修改 `scripts/package.mjs` 顶部的 `PACKAGE_DIR`、`ASSET_PREFIX`，以及 `language-server.json`。
    包含平台相关可执行文件时按 `<名称>-<版本>-<系统>-<架构>.zip` 分别打包；可执行文件不能在运行时
    往插件目录写文件，需要写的状态请放到用户缓存目录（参考 `bin/lithe-lua-language-server`）。
-3. `plugin.json` 的完整格式见 Lithe 的
+3. 修改启动器中的缓存命名空间和 `.github/workflows/ci.yml` 中读取清单的路径，
+   同步更新作者信息、许可证和第三方声明。项目相关的索引应按工作区隔离。
+4. `plugin.json` 的完整格式见 Lithe 的
    [插件契约](https://github.com/Lithe-IDEA/Lithe-IDEA/blob/preview/shared/contracts/plugins/v1/README.md)。
+
+本地先用 Node.js 22+ 打包（还需要 `tar`、`zip`、`unzip`）：
+
+```bash
+node scripts/package.mjs
+```
+
+脚本重新生成 `dist/`，输出两个 macOS 架构的 zip 和摘要。CI 还会检查归档结构与社区包声明。
+发布前按[生命周期验收步骤](https://github.com/Lithe-IDEA/Lithe-store/blob/main/docs/lsp-plugin-lifecycle.md#7-把停止失败和卸载也当作功能验收)
+在目标 Mac 上确认 LSP、运行、禁用、重启、更新和卸载；打包成功不等于这些交互已经通过。
 
 ## 发布新版本
 
