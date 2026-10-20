@@ -1,6 +1,6 @@
 # Lua Support for Lithe
 
-为 [Lithe](https://github.com/Lithe-IDEA/Lithe-IDEA) 提供 Lua 代码智能和“运行当前文件”。
+为 [Lithe](https://github.com/1lck/Lithe-IDEA) 提供 Lua 代码智能和“运行当前文件”。
 这是一个**社区插件**，也是 [Lithe Store](https://github.com/Lithe-IDEA/Lithe-store) 的示例插件：
 想发布自己插件的开发者可以直接复制这个仓库作为模板。
 
@@ -61,7 +61,7 @@ scripts/package.mjs                            # 下载并校验 LuaLS，按平�
 3. 修改启动器中的缓存命名空间和 `.github/workflows/ci.yml` 中读取清单的路径，
    同步更新作者信息、许可证和第三方声明。项目相关的索引应按工作区隔离。
 4. `plugin.json` 的完整格式见 Lithe 的
-   [插件契约](https://github.com/Lithe-IDEA/Lithe-IDEA/blob/preview/shared/contracts/plugins/v1/README.md)。
+   [插件契约](https://github.com/1lck/Lithe-IDEA/blob/preview/shared/contracts/plugins/v1/README.md)。
 
 本地先用 Node.js 22+ 打包（还需要 `tar`、`zip`、`unzip`）：
 
