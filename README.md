@@ -16,8 +16,10 @@
 语法高亮由 Lithe 编辑器内置提供，不需要插件。安装时 Lithe 会弹窗列出以上两个程序，确认后才会安装。
 
 LuaLS 在构建时按 `language-server.json` 固定的版本下载并核对 SHA-256，打进对应平台的插件包；
-用户安装时不会再下载任何东西。LuaLS 的日志和生成文件写在
-`~/Library/Caches/io.github.lithe-idea.lua-support/`，插件目录保持只读（Lithe 会拒绝加载被改动过的插件）。
+用户安装时不会再下载任何东西。LuaLS 的警告和错误文件通过宿主提供的 `${logDir}` 写入
+当前应用日志会话的 `plugins/io.github.lithe-idea.lua-support/files/`；生成的标准库定义仍写入
+`~/Library/Caches/io.github.lithe-idea.lua-support/meta/`（设置 `XDG_CACHE_HOME` 时使用其对应目录）。
+日志与缓存生命周期独立，插件目录保持只读（Lithe 会拒绝加载被改动过的插件）。
 
 ## 安装
 
@@ -27,13 +29,28 @@ LuaLS 在构建时按 `language-server.json` 固定的版本下载并核对 SHA-
    brew install lua
    ```
 
-2. 在 Lithe（0.6.1 或更新版本）中打开 **设置 → 插件 → 插件市场**，搜索 “Lua Support”，安装并确认。
+2. 在支持插件 API 2、结构化日志 v2 和本地 `logDirectory` 的最新 macOS Lithe preview 中打开 **设置 → 插件 → 插件市场**，搜索 “Lua Support”，安装并确认。
 3. 按界面提示重启 Lithe，再打开项目中的 `.lua` 文件以激活语言服务器。
 
 Lithe 已预置 Lithe Store 社区插件源。如果你之前移除了它，先在 **⚙ → 管理插件仓库…** 中重新添加
 `https://github.com/Lithe-IDEA/Lithe-store`。
 
 目前发布 macOS Apple Silicon 与 Intel 两个包；Lithe for Windows 支持插件市场后会增加 Windows 包。
+
+## 诊断日志
+
+此分支使用 API 2 启动模板，将宿主当前会话的 `${logDir}` 传给 LuaLS 启动器。
+上游 LuaLS 3.19.1 的 `--logpath`、`--loglevel` 和 `--metapath` 是公开 CLI 参数；
+默认只保留 warn/error，避免 trace/debug 的协议和文档内容进入文件。
+语言服务生命周期、`window/logMessage` 与有界 stderr 由宿主统一写入 `lsp/lua` 通道。
+
+使用 Lithe 的独立日志窗口查看结构化事件。LuaLS 原生 `files/` 文件供单独排障，
+并不等同于宿主脱敏后的 v2 事件；不要开启详细协议或添加源码、环境变量和凭据。
+日志目录由宿主拥有，启动器不再创建独立的 `cache/log`，也不删除旧版本留下的缓存日志。
+
+本版本要求能提供本机日志目录的宿主；旧宿主或远程进程缺少 `logDirectory` 时，
+按已有启动契约明确拒绝 `${logDir}`，不回退到安装目录。
+当前包只发布 macOS；Windows 的日志实现仍为 v1，未声明支持 Windows v2。
 
 ## 用这个仓库做模板
 
@@ -44,7 +61,7 @@ Lithe 已预置 Lithe Store 社区插件源。如果你之前移除了它，先�
 
 ```text
 io.github.lithe-idea.lua-support/plugin.json   # 插件描述，目录名必须等于插件 id
-io.github.lithe-idea.lua-support/bin/          # 语言服务器启动脚本（把可写状态放到缓存目录）
+io.github.lithe-idea.lua-support/bin/          # 语言服务器启动脚本（日志使用宿主会话目录，meta 使用缓存目录）
 language-server.json                           # 固定的 LuaLS 版本、各平台下载地址与 SHA-256
 scripts/package.mjs                            # 下载并校验 LuaLS，按平台打包成 dist/<名称>-<版本>-<平台>.zip
 .github/workflows/ci.yml                       # PR 时打包，并用 Lithe Store 的规则检查
@@ -58,7 +75,7 @@ scripts/package.mjs                            # 下载并校验 LuaLS，按平�
 2. 修改 `scripts/package.mjs` 顶部的 `PACKAGE_DIR`、`ASSET_PREFIX`，以及 `language-server.json`。
    包含平台相关可执行文件时按 `<名称>-<版本>-<系统>-<架构>.zip` 分别打包；可执行文件不能在运行时
    往插件目录写文件，需要写的状态请放到用户缓存目录（参考 `bin/lithe-lua-language-server`）。
-3. 修改启动器中的缓存命名空间和 `.github/workflows/ci.yml` 中读取清单的路径，
+3. 修改启动器中的缓存命名空间，保留宿主注入的日志目录，并修改 `.github/workflows/ci.yml` 中读取清单的路径，
    同步更新作者信息、许可证和第三方声明。项目相关的索引应按工作区隔离。
 4. `plugin.json` 的完整格式见 lithe-plugin-docs 里的
    [插件契约](https://github.com/Lithe-IDEA/lithe-plugin-docs/blob/main/contract/v1/README.md)。

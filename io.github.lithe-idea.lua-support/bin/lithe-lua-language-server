@@ -1,12 +1,18 @@
 #!/bin/sh
-# Lithe installs plugins read-only and rejects a plugin whose files change, so
-# LuaLS must not write logs or generated meta files next to itself (its
-# defaults). Keep that state in the user's cache directory instead.
+# LuaLS logs belong to this host session. Generated library definitions keep
+# their existing cache lifecycle and never become diagnostic attachments.
 set -eu
 package_root=$(cd "$(dirname "$0")/.." && pwd)
+log_dir=${1:?Lithe must supply the current session log directory}
+case "$log_dir" in
+  /*) ;;
+  *) exit 64 ;;
+esac
+shift
 state_dir="${XDG_CACHE_HOME:-$HOME/Library/Caches}/io.github.lithe-idea.lua-support"
-mkdir -p "$state_dir/log" "$state_dir/meta"
+mkdir -p "$state_dir/meta"
 exec "$package_root/language-server/bin/lua-language-server" \
-  --logpath="$state_dir/log" \
+  --logpath="$log_dir" \
+  --loglevel=warn \
   --metapath="$state_dir/meta" \
   "$@"
