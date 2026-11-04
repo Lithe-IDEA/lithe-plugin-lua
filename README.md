@@ -29,7 +29,7 @@ LuaLS 在构建时按 `language-server.json` 固定的版本下载并核对 SHA-
    brew install lua
    ```
 
-2. 在支持插件 API 2、结构化日志 v2 和本地 `logDirectory` 的最新 macOS Lithe preview 中打开 **设置 → 插件 → 插件市场**，搜索 “Lua Support”，安装并确认。
+2. 在 macOS Lithe 0.6.7 或更高版本（含 preview）中打开 **设置 → 插件 → 插件市场**，搜索 “Lua Support”，安装并确认。
 3. 按界面提示重启 Lithe，再打开项目中的 `.lua` 文件以激活语言服务器。
 
 Lithe 已预置 Lithe Store 社区插件源。如果你之前移除了它，先在 **⚙ → 管理插件仓库…** 中重新添加
@@ -39,7 +39,7 @@ Lithe 已预置 Lithe Store 社区插件源。如果你之前移除了它，先�
 
 ## 诊断日志
 
-此分支使用 API 2 启动模板，将宿主当前会话的 `${logDir}` 传给 LuaLS 启动器。
+从 0.3.1 起使用 API 2 启动模板，将宿主当前会话的 `${logDir}` 传给 LuaLS 启动器。
 上游 LuaLS 3.19.1 的 `--logpath`、`--loglevel` 和 `--metapath` 是公开 CLI 参数；
 默认只保留 warn/error，避免 trace/debug 的协议和文档内容进入文件。
 语言服务生命周期、`window/logMessage` 与有界 stderr 由宿主统一写入 `lsp/lua` 通道。
@@ -48,7 +48,7 @@ Lithe 已预置 Lithe Store 社区插件源。如果你之前移除了它，先�
 并不等同于宿主脱敏后的 v2 事件；不要开启详细协议或添加源码、环境变量和凭据。
 日志目录由宿主拥有，启动器不再创建独立的 `cache/log`，也不删除旧版本留下的缓存日志。
 
-本版本要求能提供本机日志目录的宿主；旧宿主或远程进程缺少 `logDirectory` 时，
+0.3.1 起要求能提供本机日志目录的宿主（Lithe 0.6.7 或更高）；旧宿主或远程进程缺少 `logDirectory` 时，
 按已有启动契约明确拒绝 `${logDir}`，不回退到安装目录。
 当前包只发布 macOS；Windows 的日志实现仍为 v1，未声明支持 Windows v2。
 
