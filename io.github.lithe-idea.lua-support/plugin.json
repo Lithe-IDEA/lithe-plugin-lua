@@ -3,7 +3,7 @@
   "id": "io.github.lithe-idea.lua-support",
   "displayName": "Lua Support",
   "version": "0.3.0",
-  "pluginAPIVersion": 1,
+  "pluginAPIVersion": 2,
   "vendor": {
     "id": "io.github.lithe-idea",
     "displayName": "Lithe Community",
@@ -27,7 +27,7 @@
         "kind": "packaged",
         "path": "bin/lithe-lua-language-server"
       },
-      "arguments": [],
+      "arguments": ["${logDir}"],
       "validationArguments": []
     }
   ],
